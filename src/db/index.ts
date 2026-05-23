@@ -9,7 +9,7 @@ export const initDB = async () => {
     await pool.query(`
     CREATE TABLE IF NOT EXISTS users(
     id SERIAL PRIMARY KEY,
-    name VARCHAR(30),
+    name VARCHAR(30) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role VARCHAR(20) DEFAULT 'contributor',
@@ -25,10 +25,10 @@ export const initDB = async () => {
         CREATE TABLE IF NOT EXISTS issues(
         id SERIAL PRIMARY KEY,
         title VARCHAR (150) NOT NULL,
-        description TEXT,
-        type VARCHAR(30),
+        description TEXT NOT NULL,
+        type VARCHAR(30) NOT NULL,
         status VARCHAR (30) DEFAULT 'open',
-reporter_id INT,
+reporter_id INT NOT NULL ,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
         )
