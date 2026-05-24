@@ -44,15 +44,98 @@ const getAllIssueIntoDb = async () => {
       reporter: {
         id: reporterUser?.id,
         name: reporterUser?.name,
-        role: reporterUser?.role
+        role: reporterUser?.role,
       },
     };
   });
 
-  return combinedData
+  return combinedData;
+};
+const singleIssueIntoDb = async (id: string) => {
+  const singleIssue = await pool.query(
+    `
+        
+        SELECT * FROM issues where id=$1`,
+    [id],
+  );
+
+  if (singleIssue.rows.length === 0) {
+    return null;
+  }
+
+  const issue = singleIssue.rows[0];
+
+  const user = await pool.query(
+    `SELECT id, name, role FROM users WHERE id = $1`,
+    [issue.reporter_id],
+  );
+
+  const reporterUser = user.rows[0];
+  const combinedSingleIssue = {
+    id: issue.id,
+    title: issue.title,
+    description: issue.description,
+    type: issue.type,
+    status: issue.status,
+    created_at: issue.created_at,
+    updated_at: issue.updated_at,
+    reporter: {
+      id: reporterUser?.id,
+      name: reporterUser?.name,
+      role: reporterUser?.role,
+    },
+  };
+
+  return combinedSingleIssue;
 };
 
+const updateIssueIntoDb = async(
+  id: string,
+  userId: number,
+  role: string,
+  payload: any,
+) => {
+  const issueData = await pool.query(`SELECT * FROM issues WHERE id=$1`, [id]);
+  if (issueData.rows.length === 0) {
+    throw new Error("Issue not found");
+  }
+  const issue = issueData.rows[0];
+
+  if (role === "contributor") {
+    if (issue.reporter_id !== userId) {
+      throw new Error("You can only update your own issues");
+    }
+    if (issue.status !== "open") {
+      throw new Error("Cannot update an issue that is not open");
+    }
+  }
+
+  const status = role === "maintainer" ? payload.status : issue.status;
+
+  const updatedResult = await pool.query(
+    `UPDATE issues 
+     SET 
+        title = COALESCE($1, title), 
+        description = COALESCE($2, description), 
+        type = COALESCE($3, type), 
+        status = COALESCE($4, status), 
+        updated_at = NOW() 
+     WHERE id = $5 
+     RETURNING *`,
+    [
+      payload.title || null,
+      payload.description || null,
+      payload.type || null,
+      status || null,
+      id,
+    ],
+  );
+
+  return updatedResult.rows[0];
+};
 export const issueService = {
   createIssueIntoDb,
-  getAllIssueIntoDb
+  getAllIssueIntoDb,
+  singleIssueIntoDb,
+  updateIssueIntoDb,
 };

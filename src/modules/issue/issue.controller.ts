@@ -65,9 +65,59 @@ const getAllIssue = async (req: Request, res: Response) => {
   }
 };
 
+const singleIssue = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await issueService.singleIssueIntoDb(id as string);
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
 
-const singleIssue=(async(req:Request, res: Response)=>{
-    
-})
+    res.status(200).json({
+      success: true,
+      message: "Issue fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      errors: error.message || error,
+    });
+  }
+};
 
-export const issueController = { createIssue,getAllIssue };
+const updateIssue = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { role, id: userId } = (req as any).user;
+    const result = await issueService.updateIssueIntoDb(
+      id as string,
+      req.body,
+      role,
+      userId,
+    );
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Issue fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      errors: error.message || error,
+    });
+  }
+};
+export const issueController = { createIssue, getAllIssue, singleIssue,updateIssue };
