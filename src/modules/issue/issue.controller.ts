@@ -120,4 +120,31 @@ const updateIssue = async (req: Request, res: Response) => {
     });
   }
 };
-export const issueController = { createIssue, getAllIssue, singleIssue,updateIssue };
+
+const deleteIssue = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const { role } = (req as any).user;
+
+    const result = await issueService.deleteIssueIntoDb(
+      id as string,
+      role as string,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Issue deleted successfully",
+    });
+  } catch (error) {
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Failed to delete issue",
+    });
+  }
+};
+export const issueController = {
+  createIssue,
+  getAllIssue,
+  singleIssue,
+  updateIssue,
+};

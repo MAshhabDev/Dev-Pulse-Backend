@@ -10,6 +10,6 @@ route.get("/:id", issueController.singleIssue);
 
 route.put("/:id",issueController.updateIssue);
 
-route.delete("/:id"),
+route.delete("/:id",),
 
 export const issueRoute = route;

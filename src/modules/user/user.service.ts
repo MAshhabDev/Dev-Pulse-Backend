@@ -14,7 +14,7 @@ const createUserIntoDb = async (payload: IUser) => {
     [name, email, hashPassword, role],
   );
   delete result.rows[0].password;
-  return result;
+  return result.rows;
 };
 
 export const userService = {

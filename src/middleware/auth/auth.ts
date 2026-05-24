@@ -26,7 +26,7 @@ export const auth = (...roles: Role[]) => {
       );
 
       if (userData.rows.length === 0) {
-        res.status(404).json({
+        return res.status(404).json({
           success: false,
           message: "User Not Found",
         });
@@ -35,13 +35,13 @@ export const auth = (...roles: Role[]) => {
       const user = userData.rows[0];
 
       if (roles.length && !roles.includes(user.role)) {
-        res.status(403).json({
+        return res.status(403).json({
           success: false,
           message: "Forbidden!!,This role have no access!",
         });
       }
 
-      req.user = decode;
+      (req as any).user = decode;
 
       next();
     } catch (error) {

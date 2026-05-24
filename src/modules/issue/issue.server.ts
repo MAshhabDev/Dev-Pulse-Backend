@@ -89,7 +89,7 @@ const singleIssueIntoDb = async (id: string) => {
   return combinedSingleIssue;
 };
 
-const updateIssueIntoDb = async(
+const updateIssueIntoDb = async (
   id: string,
   userId: number,
   role: string,
@@ -133,9 +133,25 @@ const updateIssueIntoDb = async(
 
   return updatedResult.rows[0];
 };
+
+const deleteIssueIntoDb = async (id:string, role:string) => {
+  if (role !== "maintainer") {
+    throw new Error("Forbidden: Only maintainers can delete issues");
+  }
+const issue= await pool.query(`SELECT * FROM issues WHERE id = $1`, [id]);
+  if (issue.rows.length === 0) {
+    throw new Error("Issue not found");
+  }
+  const result = await pool.query(
+    `DELETE FROM issues WHERE id=$1`,
+    [id],
+  );
+  return result;
+};
 export const issueService = {
   createIssueIntoDb,
   getAllIssueIntoDb,
   singleIssueIntoDb,
   updateIssueIntoDb,
+  deleteIssueIntoDb
 };
