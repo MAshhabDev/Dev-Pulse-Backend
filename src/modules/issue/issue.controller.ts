@@ -40,3 +40,34 @@ const createIssue = async (req: Request, res: Response) => {
     });
   }
 };
+
+const getAllIssue = async (req: Request, res: Response) => {
+  try {
+    const result = await issueService.getAllIssueIntoDb();
+    if (result.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "Login successful",
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Issues fetched successfully",
+        data: result,
+      });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching issues",
+      errors: error.message || error,
+    });
+  }
+};
+
+
+const singleIssue=(async(req:Request, res: Response)=>{
+    
+})
+
+export const issueController = { createIssue,getAllIssue };

@@ -14,7 +14,7 @@ app.use(express());
 app.use("api/auth/signup", userRoute);
 app.use("api/auth/signin", authRoute);
 
-app.use("api/issues?sort=newest", issueRoute);
+app.use("api/issues", issueRoute);
 
 app.get("/", async (req: Request, res: Response) => {
   res.send("Hello World");
