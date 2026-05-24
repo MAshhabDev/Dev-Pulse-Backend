@@ -1,4 +1,11 @@
-export type Role = "contributor" | "maintainer";
+export const USER_ROLE = {
+  maintainer: "maintainer",
+
+  contributor: "contributor",
+} as const;
+
+
+export type Role=(typeof USER_ROLE);
 
 export interface IUser {
   id: number;

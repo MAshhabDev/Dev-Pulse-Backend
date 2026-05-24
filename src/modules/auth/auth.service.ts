@@ -6,11 +6,10 @@ import type { ILogin } from "./auth.interface";
 
 const signInToDb = async (payload: ILogin) => {
   const { email, password } = payload;
-  
-  const userData = await pool.query(
-    `SELECT * FROM users WHERE email = $1`,
-    [email],
-  );
+
+  const userData = await pool.query(`SELECT * FROM users WHERE email = $1`, [
+    email,
+  ]);
 
   if (userData.rows.length === 0) {
     throw new Error("Invalid credentials");
@@ -28,6 +27,7 @@ const signInToDb = async (payload: ILogin) => {
     id: user.id,
     name: user.name,
     role: user.role,
+    email: user.email,
   };
 
   const accessToken = jwt.sign(jwtPayload, config.access_secret as string, {
