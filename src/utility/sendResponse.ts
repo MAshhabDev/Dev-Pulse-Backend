@@ -5,8 +5,8 @@ const sendResponse = <T>(res: Response, data: TResponse<T>) => {
   res.status(data.statusCode).json({
     success: data.success,
     message: data.message,
-    data: data.data,
-    error: data.error,
+    data: data.data !== undefined ? data.data : null,
+    error: data.error || null,
   });
 };
 

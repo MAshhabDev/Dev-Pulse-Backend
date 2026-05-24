@@ -44,18 +44,12 @@ const createIssue = async (req: Request, res: Response) => {
 const getAllIssue = async (req: Request, res: Response) => {
   try {
     const result = await issueService.getAllIssueIntoDb();
-    if (result.length === 0) {
-      res.status(404).json({
-        success: false,
-        message: "Login successful",
-      });
 
-      res.status(200).json({
-        success: true,
-        message: "Issues fetched successfully",
-        data: result,
-      });
-    }
+    res.status(200).json({
+      success: true,
+      message: "Issues fetched successfully",
+      data: result,
+    });
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -97,19 +91,15 @@ const updateIssue = async (req: Request, res: Response) => {
     const result = await issueService.updateIssueIntoDb(
       id as string,
       req.body,
-      role,
       userId,
+      role,
     );
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: "Issue not found",
-      });
-    }
+
+
 
     res.status(200).json({
       success: true,
-      message: "Issue fetched successfully",
+      message: "Issue updated successfully",
       data: result,
     });
   } catch (error) {
@@ -147,4 +137,5 @@ export const issueController = {
   getAllIssue,
   singleIssue,
   updateIssue,
+  deleteIssue
 };

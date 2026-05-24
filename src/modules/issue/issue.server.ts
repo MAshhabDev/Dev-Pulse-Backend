@@ -1,6 +1,8 @@
 import { pool } from "../../db";
 import type { IIssue } from "./issue.interface";
 
+// Create Issue
+
 const createIssueIntoDb = async (payload: IIssue, reporterId: number) => {
   const { title, description, type } = payload;
 
@@ -10,9 +12,10 @@ const createIssueIntoDb = async (payload: IIssue, reporterId: number) => {
     [title, description, type, reporterId],
   );
 
-  return result;
+  return result.rows[0];
 };
 
+// Get All Issue
 const getAllIssueIntoDb = async () => {
   const issueData = await pool.query(
     `SELECT * FROM issues ORDER BY created_at DESC `,
@@ -51,6 +54,9 @@ const getAllIssueIntoDb = async () => {
 
   return combinedData;
 };
+
+// Single Issue
+
 const singleIssueIntoDb = async (id: string) => {
   const singleIssue = await pool.query(
     `
@@ -89,11 +95,13 @@ const singleIssueIntoDb = async (id: string) => {
   return combinedSingleIssue;
 };
 
+// Update Issue
+
 const updateIssueIntoDb = async (
   id: string,
+  payload: any,
   userId: number,
   role: string,
-  payload: any,
 ) => {
   const issueData = await pool.query(`SELECT * FROM issues WHERE id=$1`, [id]);
   if (issueData.rows.length === 0) {
@@ -134,24 +142,25 @@ const updateIssueIntoDb = async (
   return updatedResult.rows[0];
 };
 
-const deleteIssueIntoDb = async (id:string, role:string) => {
+// Delete Issue
+const deleteIssueIntoDb = async (id: string, role: string) => {
   if (role !== "maintainer") {
     throw new Error("Forbidden: Only maintainers can delete issues");
   }
-const issue= await pool.query(`SELECT * FROM issues WHERE id = $1`, [id]);
+  const issue = await pool.query(`SELECT * FROM issues WHERE id = $1`, [id]);
   if (issue.rows.length === 0) {
     throw new Error("Issue not found");
   }
   const result = await pool.query(
-    `DELETE FROM issues WHERE id=$1`,
+    `DELETE FROM issues WHERE id=$1 RETURNING *`,
     [id],
   );
-  return result;
+  return result.rows[0];
 };
 export const issueService = {
   createIssueIntoDb,
   getAllIssueIntoDb,
   singleIssueIntoDb,
   updateIssueIntoDb,
-  deleteIssueIntoDb
+  deleteIssueIntoDb,
 };

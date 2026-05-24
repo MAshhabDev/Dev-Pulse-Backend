@@ -7,13 +7,25 @@ const globalErrorHandler = (
   next: NextFunction,
 ) => {
   let statusCode = err.statusCode || 500;
-  let message = "Internal Server Error";
-  let errors = err.message || "Something went wrong";
+  let message = err.message || "Internal Server Error";
+
+  let errors: any = [
+    {
+      path: "",
+      message: err.message || "Something went wrong",
+    },
+  ];
 
   if (err.code === "23505") {
     statusCode = 400;
     message = "Duplicate Resource Conflict";
-    errors = "This email is already registered. Please use a different email.";
+    errors = [
+      {
+        path: "email",
+        message:
+          "This email is already registered. Please use a different email.",
+      },
+    ];
   }
   res.status(statusCode).json({
     success: false,
