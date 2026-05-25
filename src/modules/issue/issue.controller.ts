@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { issueService } from "./issue.server";
+import { issueService } from "./issue.service";
 import sendResponse from "../../utility/sendResponse";
 
 const createIssue = async (req: Request, res: Response) => {
@@ -14,11 +14,11 @@ const createIssue = async (req: Request, res: Response) => {
       });
     }
 
-    if (!description || description.length < 20) {
+    if (!description || description.trim().length < 20) {
       return sendResponse(res, {
         statusCode: 400,
         success: false,
-        message: "Bad Request",
+        message: "Bad Request: Description must be at least 20 characters long",
       });
     }
     if (type !== "bug" && type !== "feature_request") {
@@ -136,7 +136,7 @@ const deleteIssue = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-const { role } = (req as Request & { user: { role: string } }).user;
+    const { role } = (req as Request & { user: { role: string } }).user;
     const result = await issueService.deleteIssueIntoDb(
       id as string,
       role as string,
@@ -151,7 +151,7 @@ const { role } = (req as Request & { user: { role: string } }).user;
     const errorMessage =
       error instanceof Error ? error.message : "Something Went Wrong";
 
-      let statusCode = 500;
+    let statusCode = 500;
     if (errorMessage === "Issue not found") statusCode = 404;
     if (errorMessage.includes("Forbidden")) statusCode = 403;
 
@@ -160,7 +160,6 @@ const { role } = (req as Request & { user: { role: string } }).user;
       success: false,
       message: errorMessage,
     });
-   
   }
 };
 export const issueController = {

@@ -9,7 +9,9 @@ route.post(
   "/", 
   auth(USER_ROLE.maintainer, USER_ROLE.contributor), 
   issueController.createIssue
-);route.get("/", issueController.getAllIssue);
+);
+
+route.get("/", issueController.getAllIssue);
 
 route.get("/:id", issueController.singleIssue);
 

@@ -5,8 +5,8 @@ import { USER_ROLE } from "../../Types";
 
 const router = Router();
 
+router.post("/signup", authController.signUp);
 
-router.post('/', authController.signIn )
+router.post("/login", authController.signIn);
 
-
-export  const authRoute=router
+export const authRoute = router;
