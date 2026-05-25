@@ -3,8 +3,8 @@ import type { IIssue } from "./issue.interface";
 
 // Create Issue
 
-const createIssueIntoDb = async (payload: IIssue, reporterId: number) => {
-  const { title, description, type } = payload;
+const createIssueIntoDb = async (payload: Partial<IIssue>, reporterId: number): Promise<IIssue> => {
+    const { title, description, type } = payload;
 
   const result = await pool.query(
     `INSERT INTO issues(title,description,type,reporter_id) VALUES($1,$2,$3,$4) RETURNING *
@@ -99,7 +99,7 @@ const singleIssueIntoDb = async (id: string) => {
 
 const updateIssueIntoDb = async (
   id: string,
-  payload: any,
+payload: Partial<IIssue>,
   userId: number,
   role: string,
 ) => {

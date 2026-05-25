@@ -5,8 +5,7 @@ export const USER_ROLE = {
 } as const;
 
 
-export type Role=(typeof USER_ROLE);
-
+export type Role = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 export interface IUser {
   id: number;
   name: string;

@@ -12,9 +12,7 @@ const signInToDb = async (payload: ILogin) => {
   ]);
 
   if (userData.rows.length === 0) {
-    const error: any = new Error("Invalid credentials");
-    error.statusCode = 401; 
-    throw error;
+    throw new Error("Invalid credentials");
   }
 
   const user = userData.rows[0];

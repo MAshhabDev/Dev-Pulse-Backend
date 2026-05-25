@@ -10,11 +10,11 @@ const createUserIntoDb = async (payload: IUser) => {
     `
     
     INSERT INTO users (name ,email,password,role) VALUES($1,$2,$3,$4)
-    RETURNING *`,
+    RETURNING id, name, email, role, created_at, updated_at`,
     [name, email, hashPassword, role],
   );
   delete result.rows[0].password;
-  return result.rows;
+  return result.rows[0];
 };
 
 export const userService = {

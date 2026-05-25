@@ -1,11 +1,13 @@
-import type { Request, Response } from "express"; // Request ইম্পোর্ট করা হলো
+import type { Request, Response } from "express"; 
 import { authService } from "./auth.service";
+import sendResponse from "../../utility/sendResponse";
 
 const signIn = async (req: Request, res: Response) => {
   try {
     const result = await authService.signInToDb(req.body);
 
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Login successful",
       data: {
@@ -14,10 +16,12 @@ const signIn = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    res.status(401).json({
+    const errorMessage = error instanceof Error ? error.message : "Login failed";
+    sendResponse(res, {
+      statusCode: 401,
       success: false,
-      message: error.message || "Login failed",
-      errors: error.message,
+      message: errorMessage,
+      error: errorMessage, 
     });
   }
 };

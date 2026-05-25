@@ -3,12 +3,14 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import { pool } from "../../db";
 import type { Role } from "../../Types";
+import sendResponse from "../../utility/sendResponse";
 export const auth = (...roles: Role[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
       if (!token) {
-        return res.status(401).json({
+        return sendResponse(res, {
+          statusCode: 401,
           success: false,
           message: "Unauthorized access!!",
         });

@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { Response } from "express";
 import type { TResponse } from "./responseType";
 
 const sendResponse = <T>(res: Response, data: TResponse<T>) => {
   res.status(data.statusCode).json({
     success: data.success,
     message: data.message,
-    data: data.data !== undefined ? data.data : null,
+    ...(data.data !== undefined && { data: data.data }),
     error: data.error || null,
   });
 };
